@@ -10,6 +10,7 @@ func TestAddFirstSetting(t *testing.T) {
 	helper := testutils.NewAuraTestHelper(t)
 	defer helper.Close()
 
+	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetSettingsValue("aura.settings", []map[string]string{})
 
 	helper.ExecuteCommand("setting add --name test --organization-id testorganizationid --project-id testprojectid")
@@ -22,6 +23,7 @@ func TestAddSettingIfAlreadyExists(t *testing.T) {
 	helper := testutils.NewAuraTestHelper(t)
 	defer helper.Close()
 
+	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetSettingsValue("aura.settings", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
 
 	helper.ExecuteCommand("setting add --name test --organization-id testorganizationid --project-id testprojectid")
@@ -32,6 +34,7 @@ func TestAddAditionalSettings(t *testing.T) {
 	helper := testutils.NewAuraTestHelper(t)
 	defer helper.Close()
 
+	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetSettingsValue("aura.settings", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
 	helper.SetSettingsValue("aura.default-setting", "test")
 
