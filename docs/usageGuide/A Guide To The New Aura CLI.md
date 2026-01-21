@@ -54,13 +54,13 @@ You should see `aura version v1.0.0`.
 
 2. Navigate to the top right where your account name is displayed. Click the down arrow.
 
-    ![](./img/console-classic-home.png)
+   ![](./img/console-classic-home.png)
 
 3. In the a menu with your account name, click **Account Details**.  
 
 4. In the **Account Details** display, click **Create** under **Aura API** and **Credentials**.
 
-    ![](./img/guide-to-new-aura-cli/console-classic-api-keys.png)
+   ![](./img/guide-to-new-aura-cli/console-classic-api-keys.png)
 
 5. In the pop-up window, enter a client name, then click **Create**.
 
@@ -72,19 +72,19 @@ You should see `aura version v1.0.0`.
 
 2. Navigate to the top right where your account name is displayed and click the down arrow.
 
-    ![](./img/unified-console-home.png)
+   ![](./img/unified-console-home.png)
 
 3. In the menu, click **API Keys**.
 
-    ![](./img/unified-console-account-dropdown.png)
+   ![](./img/unified-console-account-dropdown.png)
 
 4. In the **API Keys** window, click **Create**.
 
-    ![](./img/unified-console-api-keys.png)
+   ![](./img/unified-console-api-keys.png)
 
 5. In the pop-up window, enter a name for the API key and click **Create**.
 
-    ![](./img/unified-console-create-api-key.png)
+   ![](./img/unified-console-create-api-key.png)
 
 6. You will be shown the client ID and client secret. Make a note as the client secret will not be shown again and you need both. If you download them, keep them safe.
 
@@ -92,19 +92,19 @@ You should see `aura version v1.0.0`.
 
 Configure the Aura CLI with the Aura API client ID and client secret you obtained earlier.
 The Aura CLI refers to these as "credentials".
-You can have several sets of credentials and  choose which one to use.
+You can have several sets of credentials and choose which one to use.
 
 1. At the command prompt, enter the following, using your values for the items in CAPITALS:
 
-    ```text
-    aura-cli credential add --name YOUR\_LABEL --client-id YOUR\_CLIENT\_ID --client-secret YOUR\_CLIENT\_SECRET
-    ```
+   ```text
+   aura-cli credential add --name YOUR\_LABEL --client-id YOUR\_CLIENT\_ID --client-secret YOUR\_CLIENT\_SECRET
+   ```
 
 2. To confirm the credentials are working, list your Aura instances:
 
-    ```text
-    aura-cli instance list --output table
-    ```
+   ```text
+   aura-cli instance list --output table
+   ```
 
 # Working with AuraDB tenants
 
@@ -120,28 +120,28 @@ The output is substantial as all available AuraDB instance configurations are re
 Consider filtering the output, for example by using the [jq](https://jqlang.org/) utility.
 
 ```text
-aura-cli tenant get TENANT-ID 
+aura-cli tenant get TENANT-ID
 ```
 
 If you have a single tenant or one that you use most frequently, it is recommended that you set it as the default to avoid repetition with other Aura CLI commands.
 Do this with:
 
 ```text
-aura-cli config set default-tenant TENANT-ID 
+aura-cli config set default-tenant TENANT-ID
 ```
 
 # Working with subcommands that use organization ID and project ID instead of tenant ID
 
-If you want to avoid setting the organization-id and project-id flag for each command, you can save these values as a setting with the `setting` subcommand. The subcommand allows adding, removing and listing settings as well as setting one setting-value as default.
+If you want to avoid setting the organization-id and project-id flag for each command, you can save these values as a project configuration with the `config project` subcommand. The subcommand allows adding, removing and listing projects as well as setting a project as default.
 
 ```text
-aura-cli setting add --name SETTING-NAME --organization-id ORGANIZATION-ID --project-id PROJECT-ID
+aura-cli config project add --name SETTING-NAME --organization-id ORGANIZATION-ID --project-id PROJECT-ID
 
-aura-cli setting use SETTING-NAME
+aura-cli config project use SETTING-NAME
 
-aura-cli setting list
+aura-cli config project list
 
-aura-cli setting remove SETTING-NAME
+aura-cli config project remove SETTING-NAME
 ```
 
 # Managing AuraDB instances
@@ -156,7 +156,7 @@ If you are using Aura Free, there is no need to do this as the configurations ar
 Create an AuraDB instance with:
 
 ```text
-aura-cli instance create --name YOUR\_INSTANCE\_NAME --type free-db --await 
+aura-cli instance create --name YOUR\_INSTANCE\_NAME --type free-db --await
 ```
 
 For other Aura tiers, provide the following:
@@ -171,7 +171,7 @@ You can find the values for these by using the tenant commands.
 Once you have them, proceed with:
 
 ```text
-aura-cli instance create --name YOUR_INSTANCE_NAME --cloud-provider YOUR_CLOUD_PROVIDER --region CLOUD_REGION --memory MEMORY --type  AURA_INSTANCE_TYPE --tenant-id YOUR_TENANT_ID 
+aura-cli instance create --name YOUR_INSTANCE_NAME --cloud-provider YOUR_CLOUD_PROVIDER --region CLOUD_REGION --memory MEMORY --type  AURA_INSTANCE_TYPE --tenant-id YOUR_TENANT_ID
 ```
 
 You can skip `--tenant-id` if you have set a default tenant.
@@ -191,7 +191,7 @@ aura-cli instance list
 Use the table format output option to improve readability:
 
 ```text
-aura-cli instance list --output table 
+aura-cli instance list --output table
 ```
 
 From the list, you can then use the ID for an AuraDB instance to get detailed information about it, including the URL to use for metrics:
@@ -285,27 +285,27 @@ In both cases, the destination AuraDB instance must be running.
 
 1. Obtain the ID of the AuraDB instance that has the desired snapshot you wish to use, referred to as the "source instance.
 
-    ```text
-    aura-cli instance list --output table  
-    ```
+   ```text
+   aura-cli instance list --output table 
+   ```
 
 2. Decide which of its snapshots to use and note the snapshot ID, referred to as source snapshot:
 
-    ```text
-    aura-cli instance snapshot list --instance-id SOURCE_INSTANCE_ID  
-    ```
+   ```text
+   aura-cli instance snapshot list --instance-id SOURCE_INSTANCE_ID 
+   ```
 
 3. Locate the destination AuraDB instance and obtain its ID, referred to as the destination instance:
 
-    ```text
-    aura-cli instance list --output table
-    ```
+   ```text
+   aura-cli instance list --output table
+   ```
 
 4. Perform the overwrite:
 
-    ```text
-    aura-cli instance overwrite DESTINATION_INSTANCE_ID --source-instance-id SOURCE_INSTANCE_ID  --source-snapshot-id SOURCE_SNAPSHOT_ID
-    ```
+   ```text
+   aura-cli instance overwrite DESTINATION_INSTANCE_ID --source-instance-id SOURCE_INSTANCE_ID  --source-snapshot-id SOURCE_SNAPSHOT_ID
+   ```
 
 If you receive a response that looks like the following, select a different snapshot:
 
@@ -317,9 +317,9 @@ It is not possible at this time for the Aura CLI to indicate which snapshots are
 
 5. The destination AuraDB instance content will now be overwritten. Depending on the size, this will take several minutes to complete. You can check the status with:
 
-    ```text
-    aura-cli instance get DESTINATION_INSTANCE_ID 
-    ```
+   ```text
+   aura-cli instance get DESTINATION_INSTANCE_ID
+   ```
 
 When the status is "Running" the overwrite is completed.
 
@@ -327,21 +327,21 @@ When the status is "Running" the overwrite is completed.
 
 1. Locate the destination AuraDB instance and obtain its ID, referred to as the destination instance:
 
-    ```text
-    aura-cli instance list --output table
-    ```
+   ```text
+   aura-cli instance list --output table
+   ```
 
 2. Perform the overwrite:
 
-    ```text
-    aura-cli instance overwrite DESTINATION_INSTANCE_ID --source-instance-id SOURCE_INSTANCE_ID
-    ```
+   ```text
+   aura-cli instance overwrite DESTINATION_INSTANCE_ID --source-instance-id SOURCE_INSTANCE_ID
+   ```
 
 3. The destination AuraDB instance content will now be overwritten. Depending on the size, this will take several minutes to complete. You can check the status with:
 
-    ```text
-    aura-cli instance get DESTINATION_INSTANCE_ID 
-    ```
+   ```text
+   aura-cli instance get DESTINATION_INSTANCE_ID
+   ```
 
 When the status is "Running" the overwrite is completed.
 
@@ -354,6 +354,7 @@ We advise you to read this before continuing.
 The Aura CLI allows management of this feature with these commands:
 
 -  `create` - allows Aura to use the key defined in your Cloud Key Management System.
+
 - `delete` - removes the permission for Aura to use a key. This makes all data encrypted with that key inaccessible.
 - `list` - lists already defined CMEKs.
 - `get` - detailed information about an individual CMEK.
@@ -400,66 +401,91 @@ The Aura CLI provides a full set of commands to manage Fleet Manager deployments
 The workflow to setup a new monitored deployment is as follows:
 
 Create a new deployment with the wanted properties.
+
 ```text
 aura-cli deployment create --name DEPLOYMENT_NAME --connection-url DATABASE_CONNECTION_URL --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
+
 Create a new Fleet Manager token with the wanted properties for the newly created deployment.
+
 ```text
 aura-cli deployment token create --deployment-id DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
+
 Then log into the Neo4j database that you want to monitor and register the new token with the `call fleetManagement.registerToken('TOKEN_HERE');` procedure
 
 ## Commands at a glance
 
 Each command requires an organization and project ID parameter
+
 ```text
 --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT\_ID
 ```
+
 Create a new deployment (Connection URL is optional).
+
 ```text
 aura-cli deployment create --name DEPLOYMENT_NAME --connection-url DATABASE_CONNECTION_URL --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
+
 Delete a deployment.
+
 ```text
 aura-cli deployment delete DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
+
 Fetch information about the given deployment.
+
 ```text
 aura-cli deployment get DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
-``` 
+```
+
 List all deployments for a project.
+
 ```text
 aura-cli deployment list --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
 
 ### Token subcommand
+
 Create a token to register a deployment for Fleet Manager monitoring.
+
 ```text
 aura-cli deployment token create --deployment-id DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
+
 Recreate a token to override an existing token for a deployment.
+
 ```text
 aura-cli deployment token update --deployment-id DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
+
 Delete a token from a deployment to stop monitoring the deployment.
+
 ```text
 aura-cli deployment token delete --deployment-id DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
 
 ### Database subcommand
+
 List all logical databases for a deployment.
+
 ```text
 aura-cli deployment database list --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
 
 ### Server subcommand
+
 List all servers for a deployment.
+
 ```text
 aura-cli deployment deployment server list --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
 
 ### Server database subcommand
+
 List all physical databases for a deployment server.
+
 ```text
 aura-cli deployment deployment server database list --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID`
 ```
@@ -469,11 +495,13 @@ aura-cli deployment deployment server database list --organization-id YOUR_ORGAN
 Create a new Fleet Manager deployment in your project. The command will return the deployment ID for the new deployment which can then be used in future commands to fetch information about the deployment or register it as a monitored deployment using the `token create` subcommand.
 
 ### Mandatory flags
+
 - `organization-id`
 - `project-id`
 - `name`
 
 ### Optional flags
+
 - `connection-url`
 
 ```text
@@ -489,6 +517,7 @@ aura-cli deployment delete DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID 
 ```
 
 ## List
+
 List all deployments
 
 ```text
@@ -496,6 +525,7 @@ aura-cli deployment list --organization-id YOUR_ORGANIZATION_ID --project-id YOU
 ```
 
 ## Get
+
 Get details about the given deployment
 
 ```text
@@ -517,7 +547,6 @@ aura-cli deployment token create --deployment-id DEPLOYMENT_ID --organization-id
 
 Renew the token for an existing monitored deployment. This command should only be needed if you need to manually rotate the token earlier than the set rotation interval. The newly created token should be registered to the same deployment using the Neo4j procedure `call fleetManagement.registerToken('CREATED\_TOKEN');`
 
-
 ```text
 aura-cli deployment token update --deployment-id DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
@@ -533,6 +562,7 @@ aura-cli deployment token delete --deployment-id DEPLOYMENT_ID --organization-id
 ## Database
 
 ### List
+
 Get detailed information about all of the logical databases for the given deployment.
 
 ```text
@@ -542,6 +572,7 @@ aura-cli deployment database list --deployment-id DEPLOYMENT_ID --organization-i
 ## Server
 
 ### List
+
 Get detailed information about all of the servers for the given deployment.
 
 ```text
@@ -551,6 +582,7 @@ aura-cli deployment server list --deployment-id DEPLOYMENT_ID --organization-id 
 ## Server database
 
 ### List
+
 Get detailed information about all of the physical databases on the given server.
 
 ```text
@@ -562,6 +594,7 @@ aura-cli deployment server database list --deployment-id DEPLOYMENT_ID --server-
 ### Error: unknown command "deployment" for "aura-cli"
 
 Make sure that you have set your CLI to run with beta enabled
+
 ```text
 aura-cli config set beta-enabled true
 ```
@@ -571,19 +604,23 @@ aura-cli config set beta-enabled true
 Check that you are using the correct organization ID and project ID in the commands.
 
 Make sure that you have the right deployment ID. You can verify that it exists by listing all the deployments in your project.
+
 ```text
 aura-cli deployment list --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
 
 ### Failed to create a token for a deployment
+
 Error: [failed to create api key: failed to save new api key: no rows in result set]
 
 The token creation will fail if the deployment already has a token registered to it. To verify if a token already exists check the information given by:
+
 ```text
 aura-cli deployment get DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
 
 If there is a need to update the current token, a new one can be created with:
+
 ```text
 aura-cli deployment token update --deployment-id DEPLOYMENT_ID --organization-id YOUR_ORGANIZATION_ID --project-id YOUR_PROJECT_ID
 ```
@@ -594,9 +631,6 @@ Aura CLI has two commands for its own configuration:
 
  - `credential` - sets of client IDs and client secrets that are used to authenticate with the Aura API that the Aura CLI uses to perform its own operations.
  `config` - addtional configuration options for the Aura CLI, such as turning Beta features on or off.
-
-Aura CLI v2 beta has a third configuration command called `setting`
-- sets of organization and project IDs that are used with commands to avoid setting them as flags with every execution.
 
 ## Credential
 
@@ -652,7 +686,7 @@ Show the value of a chosen setting:
 aura-cli config set SETTING\_NAME
 ```
 
-#### Set
+### Set
 
 Set the value for a chosen setting:
 
@@ -660,43 +694,45 @@ Set the value for a chosen setting:
 aura-cli config set SETTING_NAME SETTING_VALUE
 ```
 
-## Setting
+### Project
 
-### Add
+Manage project related configurations.
+
+#### Add
 
 Add a set of organization and project IDs to use with v2 subcommands.
 
 ```text
-aura-cli setting add --name SETTING-NAME --organization-id ORGANIZATION-ID --project-id PROJECT-ID
+aura-cli config project add --name SETTING-NAME --organization-id ORGANIZATION-ID --project-id PROJECT-ID
 ```
 
 ### List
 
-Show all configured settings
+Show all configured projects
 
 ```text
-aura-cli setting list
+aura-cli config project list
 ```
 
 ### Remove
 
-Remove a set of settings
+Remove a project configuration
 
 ```text
-aura-cli setting remove SETTING-NAME
+aura-cli config project remove SETTING-NAME
 ```
 
 ### Use
 
-Set the default settings for the Aura CLI to use:
+Set the default project for the Aura CLI to use:
 
 ```text
-aura-cli setting use SETTING-NAME
+aura-cli config project use SETTING-NAME
 ```
 
 # Migrating to the new Aura CLI
 
-Aura CLI  has evolved from a Neo4j Labs to a proper Neo4j product.
+Aura CLI has evolved from a Neo4j Labs to a proper Neo4j product.
 The Neo4j Labs Aura CLI will continue to be available for installation for the foreseeable future, but without any further development.
 Customers are recommended to move to the new Aura CLI as soon as they are able to do so.
 This KB outlines what you need to consider to move the new Aura CLI.
@@ -725,7 +761,7 @@ After downloading the relevant file and extracting the executable, the new Aura 
 ## Commands
 
 | Labs Aura CLI                      | maps to  | New Aura CLI                                                       |
-|------------------------------------|----------|--------------------------------------------------------------------|
+| ---------------------------------- | -------- | ------------------------------------------------------------------ |
 | config                             | →        | config                                                             |
 | credentials                        | →        | credential                                                         |
 | instances                          | →        | instance                                                           |
@@ -745,7 +781,7 @@ See the following sections.
 ## Config
 
 It is not possible to remove a setting and its value although the value itself can be changed.
-If deletion is wanted, then remove it from the JSON configuration file _Mac$HOME/Library/Preferences/neo4j/cli/config.json_ Windows%LOCALAPPDATA%\neo4j\cli\config.json
+If deletion is wanted, then remove it from the JSON configuration file *Mac$HOME/Library/Preferences/neo4j/cli/config.json* Windows%LOCALAPPDATA%\neo4j\cli\config.json
 
 ## Create a new AuraDB
 
