@@ -28,35 +28,36 @@ func NewCancelCommand(cfg *clicfg.Config) *cobra.Command {
 		Short: "Cancel a job by id",
 		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			defaultSetting, err := cfg.Settings.Aura.GetDefault()
+			defaultProject, err := cfg.Aura.GetDefaultProject()
 			if err != nil {
 				log.Fatal(err)
 			}
-			if defaultSetting.OrganizationId == "" {
+			if defaultProject.OrganizationId == "" {
 				err := cmd.MarkFlagRequired(organizationIdFlag)
 				if err != nil {
 					log.Fatal(err)
 				}
 			}
 
-			if defaultSetting.ProjectId == "" {
+			if defaultProject.ProjectId == "" {
 				err := cmd.MarkFlagRequired(projectIdFlag)
 				if err != nil {
 					log.Fatal(err)
 				}
 			}
+
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defaultSetting, err := cfg.Settings.Aura.GetDefault()
+			defaultProject, err := cfg.Aura.GetDefaultProject()
 			if err != nil {
 				log.Fatal(err)
 			}
 			if organizationId == "" {
-				organizationId = defaultSetting.OrganizationId
+				organizationId = defaultProject.OrganizationId
 			}
 			if projectId == "" {
-				projectId = defaultSetting.ProjectId
+				projectId = defaultProject.ProjectId
 			}
 			jobId = args[0]
 			path := fmt.Sprintf("/organizations/%s/projects/%s/import/jobs/%s/cancellation", organizationId, projectId, jobId)

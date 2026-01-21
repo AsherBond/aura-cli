@@ -604,7 +604,7 @@ func TestGetImportJobById(t *testing.T) {
 	}
 }
 
-func TestGetImportJobByIdWithOrganizationAndProjectIdFromSettings(t *testing.T) {
+func TestGetImportJobByIdWithOrganizationAndProjectIdFromConfig(t *testing.T) {
 	organizationId := "f607bebe-0cc0-4166-b60c-b4eed69ee7ee"
 	projectId := "f607bebe-0cc0-4166-b60c-b4eed69ee7ee"
 	jobId := "87d485b4-73fc-4a7f-bb03-720f4672947e"
@@ -641,8 +641,8 @@ func TestGetImportJobByIdWithOrganizationAndProjectIdFromSettings(t *testing.T) 
         "user_id": "f607bebe-0cc0-4166-b60c-b4eed69ee7ee"
     }}`)
 
-	helper.SetSettingsValue("aura.settings", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
-	helper.SetSettingsValue("aura.default-setting", "test")
+	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
+	helper.SetConfigValue("projects.default-project", "test")
 
 	helper.SetConfigValue("aura.beta-enabled", true)
 

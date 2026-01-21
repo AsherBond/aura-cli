@@ -28,18 +28,18 @@ func NewGetCmd(cfg *clicfg.Config) *cobra.Command {
 		Long:  "Returns details about a specific Fleet Manager deployment.",
 		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			defaultSetting, err := cfg.Settings.Aura.GetDefault()
+			defaultProject, err := cfg.Aura.GetDefaultProject()
 			if err != nil {
 				log.Fatal(err)
 			}
-			if defaultSetting.OrganizationId == "" {
+			if defaultProject.OrganizationId == "" {
 				err := cmd.MarkFlagRequired(organizationIdFlag)
 				if err != nil {
 					log.Fatal(err)
 				}
 			}
 
-			if defaultSetting.ProjectId == "" {
+			if defaultProject.ProjectId == "" {
 				err := cmd.MarkFlagRequired(projectIdFlag)
 				if err != nil {
 					log.Fatal(err)
@@ -49,15 +49,15 @@ func NewGetCmd(cfg *clicfg.Config) *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defaultSetting, err := cfg.Settings.Aura.GetDefault()
+			defaultProject, err := cfg.Aura.GetDefaultProject()
 			if err != nil {
 				log.Fatal(err)
 			}
 			if organizationId == "" {
-				organizationId = defaultSetting.OrganizationId
+				organizationId = defaultProject.OrganizationId
 			}
 			if projectId == "" {
-				projectId = defaultSetting.ProjectId
+				projectId = defaultProject.ProjectId
 			}
 			deploymentId := args[0]
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s", organizationId, projectId, deploymentId)

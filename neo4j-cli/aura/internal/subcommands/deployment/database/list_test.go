@@ -106,7 +106,7 @@ func TestListDeploymentDatabase(t *testing.T) {
 	}`)
 }
 
-func TestListDeploymentDatabaseWithOrganizationAndProjectIdFromSettings(t *testing.T) {
+func TestListDeploymentDatabaseWithOrganizationAndProjectIdFromConfig(t *testing.T) {
 	helper := testutils.NewAuraTestHelper(t)
 	defer helper.Close()
 
@@ -155,8 +155,8 @@ func TestListDeploymentDatabaseWithOrganizationAndProjectIdFromSettings(t *testi
 		]
 	}`)
 
-	helper.SetSettingsValue("aura.settings", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
-	helper.SetSettingsValue("aura.default-setting", "test")
+	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
+	helper.SetConfigValue("projects.default-project", "test")
 
 	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetConfigValue("aura.output", "json")

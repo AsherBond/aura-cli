@@ -1,4 +1,4 @@
-package setting
+package project
 
 import (
 	"github.com/neo4j/cli/common/clicfg"
@@ -8,13 +8,9 @@ import (
 func NewListCmd(cfg *clicfg.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
-		Short: "list settings",
+		Short: "list projects",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cfg.Settings.Aura.Print(cmd.OutOrStdout()); err != nil {
-				return err
-			}
-
-			return nil
+			return cfg.Aura.ListProjects(cmd)
 		},
 	}
 }

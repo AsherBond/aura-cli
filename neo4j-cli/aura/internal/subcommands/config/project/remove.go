@@ -1,4 +1,4 @@
-package setting
+package project
 
 import (
 	"github.com/neo4j/cli/common/clicfg"
@@ -8,10 +8,10 @@ import (
 func NewRemoveCmd(cfg *clicfg.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove <name>",
-		Short: "Removes a setting",
+		Short: "Removes a project",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return cfg.Settings.Aura.Remove(args[0])
+			return cfg.Aura.RemoveProject(args[0])
 		},
 	}
 }

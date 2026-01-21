@@ -1,4 +1,4 @@
-package setting
+package project
 
 import (
 	"github.com/neo4j/cli/common/clicfg"
@@ -20,9 +20,9 @@ func NewAddCmd(cfg *clicfg.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "add",
-		Short: "Adds a setting",
+		Short: "Adds a project",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return cfg.Settings.Aura.Add(name, organizationId, projectId)
+			return cfg.Aura.AddProject(name, organizationId, projectId)
 		},
 	}
 

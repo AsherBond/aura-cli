@@ -28,7 +28,7 @@ func TestDeleteDeploymentToken(t *testing.T) {
 	helper.AssertOut("Deployment token deleted successfully for deployment 9a1e6181-7d0b-48a2-bc2b-4250c36b5cc2")
 }
 
-func TestDeleteDeploymentTokenWithOrganizationAndProjectIdFromSettings(t *testing.T) {
+func TestDeleteDeploymentTokenWithOrganizationAndProjectIdFromConfig(t *testing.T) {
 	helper := testutils.NewAuraTestHelper(t)
 	defer helper.Close()
 
@@ -38,8 +38,8 @@ func TestDeleteDeploymentTokenWithOrganizationAndProjectIdFromSettings(t *testin
 
 	mockHandler := helper.NewRequestHandlerMock(fmt.Sprintf("/v2beta1/organizations/%s/projects/%s/fleet-manager/deployments/%s/token", organizationId, projectId, deploymentId), http.StatusNoContent, "")
 
-	helper.SetSettingsValue("aura.settings", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
-	helper.SetSettingsValue("aura.default-setting", "test")
+	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
+	helper.SetConfigValue("projects.default-project", "test")
 
 	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetConfigValue("aura.output", "json")

@@ -1,4 +1,4 @@
-package setting
+package project
 
 import (
 	"github.com/neo4j/cli/common/clicfg"
@@ -8,10 +8,10 @@ import (
 func NewUseCmd(cfg *clicfg.Config) *cobra.Command {
 	return &cobra.Command{
 		Use:   "use <name>",
-		Short: "Sets the default setting to be used",
+		Short: "Sets the default project to be used",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return cfg.Settings.Aura.SetDefault(args[0])
+			return cfg.Aura.SetDefaultProject(args[0])
 		},
 	}
 }

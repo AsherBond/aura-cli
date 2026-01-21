@@ -33,18 +33,8 @@ func TestGetAuraBaseUrlConfigRemovesTrailingPath(t *testing.T) {
 			"default-credential": "test-cred"
 			}
 		}`
-	settingsStr := `{
-		"aura": {
-			"settings": [{
-				"name": "test-setting",
-				"organization-id": "test-organization",
-				"project-id": "test-project"
-			}],
-			"default-setting": "test-setting"
-		}
-	}`
 
-	fs, err := testfs.GetTestFs(cfgStr, credentialsStr, settingsStr)
+	fs, err := testfs.GetTestFs(cfgStr, credentialsStr)
 	assert.Nil(t, err)
 	cfg := clicfg.NewConfig(fs, "test")
 

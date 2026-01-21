@@ -1,4 +1,4 @@
-package setting
+package project
 
 import (
 	"github.com/neo4j/cli/common/clicfg"
@@ -7,8 +7,8 @@ import (
 
 func NewCmd(cfg *clicfg.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "setting",
-		Short: "Manage and view setting values",
+		Use:   "project",
+		Short: "Manage and view project values",
 	}
 
 	cmd.AddCommand(NewAddCmd(cfg))
