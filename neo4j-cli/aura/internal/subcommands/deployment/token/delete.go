@@ -7,6 +7,7 @@ import (
 
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
 	"github.com/spf13/cobra"
 )
 
@@ -29,37 +30,11 @@ func NewDeleteCmd(cfg *clicfg.Config) *cobra.Command {
 		Long:  "Deletes the token for the given Fleet Manager deployment. After deleting the token, users should also disable Fleet Manager from the database using `call fleetManagement.disable();`",
 		Args:  cobra.ExactArgs(0),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if defaultProject.OrganizationId == "" {
-				err := cmd.MarkFlagRequired(organizationIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			if defaultProject.ProjectId == "" {
-				err := cmd.MarkFlagRequired(projectIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			return nil
+			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if organizationId == "" {
-				organizationId = defaultProject.OrganizationId
-			}
-			if projectId == "" {
-				projectId = defaultProject.ProjectId
-			}
+			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s/token", organizationId, projectId, deploymentId)
 
 			cmd.SilenceUsage = true

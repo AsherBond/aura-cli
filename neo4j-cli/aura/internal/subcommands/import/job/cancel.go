@@ -2,12 +2,12 @@ package job
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/output"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
 	"github.com/spf13/cobra"
 )
 
@@ -28,37 +28,11 @@ func NewCancelCommand(cfg *clicfg.Config) *cobra.Command {
 		Short: "Cancel a job by id",
 		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if defaultProject.OrganizationId == "" {
-				err := cmd.MarkFlagRequired(organizationIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			if defaultProject.ProjectId == "" {
-				err := cmd.MarkFlagRequired(projectIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			return nil
+			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if organizationId == "" {
-				organizationId = defaultProject.OrganizationId
-			}
-			if projectId == "" {
-				projectId = defaultProject.ProjectId
-			}
+			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+
 			jobId = args[0]
 			path := fmt.Sprintf("/organizations/%s/projects/%s/import/jobs/%s/cancellation", organizationId, projectId, jobId)
 			resBody, statusCode, err := api.MakeRequest(cfg, path, &api.RequestConfig{

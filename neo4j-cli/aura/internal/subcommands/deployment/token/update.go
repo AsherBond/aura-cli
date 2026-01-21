@@ -8,6 +8,7 @@ import (
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/output"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
 	"github.com/spf13/cobra"
 )
 
@@ -30,37 +31,11 @@ func NewUpdateCmd(cfg *clicfg.Config) *cobra.Command {
 		Long:  "Creates a new auto rotating Fleet Manager deployment token with a three month rotation interval. The token should be registered to the database again using `call fleetManagement.registerToken('$token');`",
 		Args:  cobra.ExactArgs(0),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if defaultProject.OrganizationId == "" {
-				err := cmd.MarkFlagRequired(organizationIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			if defaultProject.ProjectId == "" {
-				err := cmd.MarkFlagRequired(projectIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			return nil
+			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if organizationId == "" {
-				organizationId = defaultProject.OrganizationId
-			}
-			if projectId == "" {
-				projectId = defaultProject.ProjectId
-			}
+			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s/token", organizationId, projectId, deploymentId)
 
 			cmd.SilenceUsage = true

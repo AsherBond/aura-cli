@@ -2,12 +2,12 @@ package deployment
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/output"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
 	"github.com/spf13/cobra"
 )
 
@@ -28,37 +28,11 @@ func NewGetCmd(cfg *clicfg.Config) *cobra.Command {
 		Long:  "Returns details about a specific Fleet Manager deployment.",
 		Args:  cobra.ExactArgs(1),
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if defaultProject.OrganizationId == "" {
-				err := cmd.MarkFlagRequired(organizationIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			if defaultProject.ProjectId == "" {
-				err := cmd.MarkFlagRequired(projectIdFlag)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-
-			return nil
+			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.GetDefaultProject()
-			if err != nil {
-				log.Fatal(err)
-			}
-			if organizationId == "" {
-				organizationId = defaultProject.OrganizationId
-			}
-			if projectId == "" {
-				projectId = defaultProject.ProjectId
-			}
+			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+
 			deploymentId := args[0]
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s", organizationId, projectId, deploymentId)
 
