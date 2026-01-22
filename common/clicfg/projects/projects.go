@@ -2,6 +2,7 @@ package projects
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/neo4j/cli/common/clicfg/fileutils"
 	"github.com/neo4j/cli/common/clierr"
@@ -78,6 +79,13 @@ func (p *AuraConfigProjects) Remove(name string) error {
 	projects.Projects = append(projects.Projects[:indexToRemove], projects.Projects[indexToRemove+1:]...)
 	if len(projects.Projects) == 0 {
 		projects.DefaultProject = ""
+	} else {
+		_, err := p.project(projects.DefaultProject, projects.Projects)
+		if err != nil {
+			newDefault := projects.Projects[0].Name
+			fmt.Printf("Removed the current default project %s, setting %s as the new default project", name, newDefault)
+			projects.DefaultProject = newDefault
+		}
 	}
 
 	return p.updateProjects(data, projects)
@@ -90,15 +98,12 @@ func (p *AuraConfigProjects) SetDefault(name string) (*AuraProject, error) {
 	if err != nil {
 		return nil, err
 	}
-	var defaultProject *AuraProject
-	for _, project := range projects.Projects {
-		if project.Name == name {
-			defaultProject = project
-		}
+
+	defaultProject, err := p.project(name, projects.Projects)
+	if err != nil {
+		return nil, clierr.NewUsageError(err.Error())
 	}
-	if defaultProject == nil {
-		return nil, clierr.NewUsageError("could not find a project with the name %s", name)
-	}
+
 	projects.DefaultProject = name
 
 	err = p.updateProjects(data, projects)
@@ -117,13 +122,21 @@ func (p *AuraConfigProjects) Default() (*AuraProject, error) {
 	}
 
 	projects := auraProjectConfig.Projects
-	for _, project := range projects.Projects {
-		if project.Name == projects.DefaultProject {
+	defaultProject, err := p.project(projects.DefaultProject, projects.Projects)
+	if err != nil {
+		return &AuraProject{}, nil
+	}
+
+	return defaultProject, nil
+}
+
+func (p *AuraConfigProjects) project(name string, projects []*AuraProject) (*AuraProject, error) {
+	for _, project := range projects {
+		if project.Name == name {
 			return project, nil
 		}
 	}
-
-	return &AuraProject{}, nil
+	return nil, fmt.Errorf("could not find a project with the name %s", name)
 }
 
 func (p *AuraConfigProjects) projects(data []byte) (*AuraProjects, error) {
