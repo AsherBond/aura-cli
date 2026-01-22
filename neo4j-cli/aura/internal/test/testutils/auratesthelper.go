@@ -79,6 +79,11 @@ func (helper *AuraTestHelper) SetCredentialsValue(key string, value interface{})
 	helper.credentials = credentials
 }
 
+func (helper *AuraTestHelper) SetDefaultProjectInConfig(organizationId, projectId string) {
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
+	helper.SetConfigValue("aura-projects.default-project", "test")
+}
+
 // Assets no errors were returned
 func (helper *AuraTestHelper) AsssertOk() {
 	helper.AssertErr("")

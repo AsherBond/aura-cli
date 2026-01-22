@@ -104,11 +104,9 @@ func TestGetDeploymentWithOrganizationAndProjectIdFromConfig(t *testing.T) {
 		}
 	}`)
 
-	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
-	helper.SetConfigValue("aura-projects.default-project", "test")
-
 	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetConfigValue("aura.output", "json")
+	helper.SetDefaultProjectInConfig(organizationId, projectId)
 	helper.ExecuteCommand(fmt.Sprintf("deployment get %s", deploymentId))
 
 	mockHandler.AssertCalledTimes(1)

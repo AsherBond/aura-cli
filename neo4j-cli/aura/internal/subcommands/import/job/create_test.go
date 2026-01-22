@@ -54,11 +54,8 @@ func TestCreateImportJobWithOrganizationAndProjectIdFromConfig(t *testing.T) {
 		}
 	`)
 
-	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
-	helper.SetConfigValue("aura-projects.default-project", "test")
-
 	helper.SetConfigValue("aura.beta-enabled", true)
-
+	helper.SetDefaultProjectInConfig(organizationId, projectId)
 	helper.ExecuteCommand("import job create --import-model-id=e01cdc6d-2f50-4f46-b04b-8ec8fc8de839 --db-id=07e49cf5")
 
 	mockHandler.AssertCalledTimes(1)
