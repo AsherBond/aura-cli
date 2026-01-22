@@ -8,7 +8,8 @@ import (
 func NewCmd(cfg *clicfg.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "project",
-		Short: "Manage and view project values",
+		Short: "Manage and view Aura project configurations.",
+		Long:  "Manage and view Aura project configurations. Configurable values include organization and project id. Set the project you want to work with as the default project with `config project use <name>`",
 	}
 
 	cmd.AddCommand(NewAddCmd(cfg))
