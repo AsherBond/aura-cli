@@ -311,34 +311,34 @@ func (config *AuraConfig) ListProjects(cmd *cobra.Command) error {
 	return nil
 }
 
-func (config *AuraConfig) SetDefaultProject(name string) error {
+func (config *AuraConfig) SetDefaultProject(name string) (*AuraProject, error) {
 	filename := config.viper.ConfigFileUsed()
 	data := fileutils.ReadFileSafe(config.fs, filename)
 
 	auraProjectConfig := AuraProjectConfig{}
 	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
-		return err
+		return nil, err
 	}
 
 	projects := auraProjectConfig.Projects
-	projectExists := false
+	var defaultProject *AuraProject
 	for _, project := range projects.Projects {
 		if project.Name == name {
-			projectExists = true
+			defaultProject = project
 		}
 	}
-	if !projectExists {
-		return clierr.NewUsageError("could not find a project with the name %s", name)
+	if defaultProject == nil {
+		return nil, clierr.NewUsageError("could not find a project with the name %s", name)
 	}
 	projects.DefaultProject = name
 
 	updateConfig, err := sjson.Set(string(data), "projects", projects)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	fileutils.WriteFile(config.fs, filename, []byte(updateConfig))
-	return nil
+	return defaultProject, nil
 }
 
 func (config *AuraConfig) GetDefaultProject() (*AuraProject, error) {
