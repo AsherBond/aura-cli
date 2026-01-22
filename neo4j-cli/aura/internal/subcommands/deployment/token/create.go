@@ -8,7 +8,7 @@ import (
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/output"
-	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -30,11 +30,11 @@ func NewCreateCmd(cfg *clicfg.Config) *cobra.Command {
 		Short: "Create a deployment token",
 		Long:  "Create a new auto rotating Fleet Manager deployment token with a three month rotation interval. Register the deployment with Fleet Manager using the `call fleetManagement.registerToken('$token');` database procedure.",
 		Args:  cobra.ExactArgs(0),
-		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
+		PreRun: func(cmd *cobra.Command, args []string) {
+			utils.SetOragnizationAndProjectIdFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+			utils.SetMissingOragnizationAndProjectIdValuesFromDefaults(cfg, &organizationId, &projectId)
 
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s/token", organizationId, projectId, deploymentId)
 

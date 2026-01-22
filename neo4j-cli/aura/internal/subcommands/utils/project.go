@@ -1,4 +1,4 @@
-package subcommands
+package utils
 
 import (
 	"log"
@@ -7,7 +7,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func SetFlagsAsRequired(cfg *clicfg.Config, cmd *cobra.Command, organizationIdFlag string, projectIdFlag string) error {
+// This function is meant to run in the PreRun of V2 commands to ensure that the flags are marked as required if no values have been set
+// through the `config project add/use` commands.
+func SetOragnizationAndProjectIdFlagsAsRequired(cfg *clicfg.Config, cmd *cobra.Command, organizationIdFlag string, projectIdFlag string) {
 	defaultProject, err := cfg.Aura.GetDefaultProject()
 	if err != nil {
 		log.Fatal(err)
@@ -25,11 +27,11 @@ func SetFlagsAsRequired(cfg *clicfg.Config, cmd *cobra.Command, organizationIdFl
 			log.Fatal(err)
 		}
 	}
-
-	return nil
 }
 
-func SetMissingValuesFromDefaults(cfg *clicfg.Config, organizationId *string, projectId *string) {
+// This function is meant to run in the RunE of V2 commands to ensure that the values are set as the given default values if no values are
+// given via flags when running the command.
+func SetMissingOragnizationAndProjectIdValuesFromDefaults(cfg *clicfg.Config, organizationId *string, projectId *string) {
 	defaultProject, err := cfg.Aura.GetDefaultProject()
 	if err != nil {
 		log.Fatal(err)

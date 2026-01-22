@@ -7,7 +7,7 @@ import (
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/output"
-	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -27,11 +27,11 @@ func NewCancelCommand(cfg *clicfg.Config) *cobra.Command {
 		Use:   "cancel <id>",
 		Short: "Cancel a job by id",
 		Args:  cobra.ExactArgs(1),
-		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
+		PreRun: func(cmd *cobra.Command, args []string) {
+			utils.SetOragnizationAndProjectIdFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+			utils.SetMissingOragnizationAndProjectIdValuesFromDefaults(cfg, &organizationId, &projectId)
 
 			jobId = args[0]
 			path := fmt.Sprintf("/organizations/%s/projects/%s/import/jobs/%s/cancellation", organizationId, projectId, jobId)

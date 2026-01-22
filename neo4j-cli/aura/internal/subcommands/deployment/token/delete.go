@@ -7,7 +7,7 @@ import (
 
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
-	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -29,11 +29,11 @@ func NewDeleteCmd(cfg *clicfg.Config) *cobra.Command {
 		Short: "Delete the deployment token",
 		Long:  "Deletes the token for the given Fleet Manager deployment. After deleting the token, users should also disable Fleet Manager from the database using `call fleetManagement.disable();`",
 		Args:  cobra.ExactArgs(0),
-		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
+		PreRun: func(cmd *cobra.Command, args []string) {
+			utils.SetOragnizationAndProjectIdFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+			utils.SetMissingOragnizationAndProjectIdValuesFromDefaults(cfg, &organizationId, &projectId)
 
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s/token", organizationId, projectId, deploymentId)
 

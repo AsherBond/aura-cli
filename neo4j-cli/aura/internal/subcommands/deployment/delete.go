@@ -6,7 +6,7 @@ import (
 
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/api"
-	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands"
+	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -26,11 +26,11 @@ func NewDeleteCmd(cfg *clicfg.Config) *cobra.Command {
 		Short: "Delete the given deployment",
 		Long:  "Deletes the given Fleet Manager deployment. This will only delete the deployment from Fleet Manager without affecting the actual running database. It is advised to disable Fleet Management for the database using `call fleetManagement.disable()`",
 		Args:  cobra.ExactArgs(1),
-		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return subcommands.SetFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
+		PreRun: func(cmd *cobra.Command, args []string) {
+			utils.SetOragnizationAndProjectIdFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			subcommands.SetMissingValuesFromDefaults(cfg, &organizationId, &projectId)
+			utils.SetMissingOragnizationAndProjectIdValuesFromDefaults(cfg, &organizationId, &projectId)
 
 			deploymentId := args[0]
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s", organizationId, projectId, deploymentId)
