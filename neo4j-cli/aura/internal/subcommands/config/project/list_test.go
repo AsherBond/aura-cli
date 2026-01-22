@@ -3,6 +3,7 @@ package project_test
 import (
 	"testing"
 
+	"github.com/neo4j/cli/common/clicfg/projects"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/test/testutils"
 )
 
@@ -12,7 +13,7 @@ func TestListProjects(t *testing.T) {
 
 	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetConfigValue("output", "json")
-	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
+	helper.SetConfigValue("aura-projects.projects", map[string]*projects.AuraProject{"test": {OrganizationId: "testorganizationid", ProjectId: "testprojectid"}})
 	helper.SetConfigValue("aura-projects.default-project", "test")
 
 	helper.ExecuteCommand("config project list")
@@ -20,13 +21,12 @@ func TestListProjects(t *testing.T) {
 	helper.AssertOutJson(`
 		{
 			"default-project": "test",
-			"projects": [
-				{
-					"name": "test",
+			"projects": {
+				"test": {
 					"organization-id": "testorganizationid",
 					"project-id": "testprojectid"
 				}
-			]
+			}
 		}
 	`)
 }
@@ -41,6 +41,6 @@ func TestListProjectWithNoData(t *testing.T) {
 
 	helper.AssertOutJson(`{
 		"default-project": "",
-		"projects": []
+		"projects": {}
 	}`)
 }

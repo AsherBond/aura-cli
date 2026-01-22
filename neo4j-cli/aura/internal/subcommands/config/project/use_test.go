@@ -3,6 +3,7 @@ package project_test
 import (
 	"testing"
 
+	"github.com/neo4j/cli/common/clicfg/projects"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/test/testutils"
 )
 
@@ -11,7 +12,7 @@ func TestUseProject(t *testing.T) {
 	defer helper.Close()
 
 	helper.SetConfigValue("aura.beta-enabled", true)
-	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
+	helper.SetConfigValue("aura-projects.projects", map[string]*projects.AuraProject{"test": {OrganizationId: "testorganizationid", ProjectId: "testprojectid"}})
 
 	helper.ExecuteCommand("config project use test")
 

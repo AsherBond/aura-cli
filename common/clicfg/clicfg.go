@@ -90,7 +90,7 @@ func setDefaultValues(Viper *viper.Viper) {
 	Viper.SetDefault("aura.auth-url", DefaultAuraAuthUrl)
 	Viper.SetDefault("aura.output", "default")
 	Viper.SetDefault("aura.beta-enabled", DefaultAuraBetaEnabled)
-	Viper.SetDefault("aura-projects", projects.AuraProjects{DefaultProject: "", Projects: []*projects.AuraProject{}})
+	Viper.SetDefault("aura-projects", projects.AuraProjects{DefaultProject: "", Projects: map[string]*projects.AuraProject{}})
 }
 
 type AuraConfig struct {

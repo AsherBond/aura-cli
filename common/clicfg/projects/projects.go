@@ -21,12 +21,11 @@ type AuraProjectConfig struct {
 }
 
 type AuraProjects struct {
-	DefaultProject string         `json:"default-project"`
-	Projects       []*AuraProject `json:"projects"`
+	DefaultProject string                  `json:"default-project"`
+	Projects       map[string]*AuraProject `json:"projects"`
 }
 
 type AuraProject struct {
-	Name           string `json:"name"`
 	OrganizationId string `json:"organization-id"`
 	ProjectId      string `json:"project-id"`
 }
@@ -43,18 +42,25 @@ func (p *AuraConfigProjects) Add(name string, organizationId string, projectId s
 		return err
 	}
 
-	for _, project := range projects.Projects {
-		if project.Name == name {
-			return clierr.NewUsageError("already have a project with the name %s", name)
+	if projects == nil {
+		projects = &AuraProjects{
+			DefaultProject: "",
+			Projects:       map[string]*AuraProject{},
 		}
 	}
 
-	projects.Projects = append(projects.Projects, &AuraProject{Name: name, OrganizationId: organizationId, ProjectId: projectId})
+	if _, ok := projects.Projects[name]; ok {
+		return clierr.NewUsageError("already have a project with the name %s", name)
+	}
+
+	projects.Projects[name] = &AuraProject{OrganizationId: organizationId, ProjectId: projectId}
+
 	if len(projects.Projects) == 1 {
 		projects.DefaultProject = name
 	}
 
 	return p.updateProjects(data, projects)
+
 }
 
 func (p *AuraConfigProjects) Remove(name string) error {
@@ -65,30 +71,23 @@ func (p *AuraConfigProjects) Remove(name string) error {
 		return err
 	}
 
-	indexToRemove := -1
-	for i, project := range projects.Projects {
-		if project.Name == name {
-			indexToRemove = i
+	if _, ok := projects.Projects[name]; ok {
+		delete(projects.Projects, name)
+		if len(projects.Projects) == 0 {
+			projects.DefaultProject = ""
+		} else {
+			if _, ok := projects.Projects[projects.DefaultProject]; !ok {
+				for key := range projects.Projects {
+					fmt.Printf("Removed the current default project %s, setting %s as the new default project", name, key)
+					projects.DefaultProject = key
+					break
+				}
+			}
 		}
+		return p.updateProjects(data, projects)
 	}
 
-	if indexToRemove == -1 {
-		return clierr.NewUsageError("could not find a project with the name %s to remove", name)
-	}
-
-	projects.Projects = append(projects.Projects[:indexToRemove], projects.Projects[indexToRemove+1:]...)
-	if len(projects.Projects) == 0 {
-		projects.DefaultProject = ""
-	} else {
-		_, err := p.project(projects.DefaultProject, projects.Projects)
-		if err != nil {
-			newDefault := projects.Projects[0].Name
-			fmt.Printf("Removed the current default project %s, setting %s as the new default project", name, newDefault)
-			projects.DefaultProject = newDefault
-		}
-	}
-
-	return p.updateProjects(data, projects)
+	return clierr.NewUsageError("could not find a project with the name %s to remove", name)
 }
 
 func (p *AuraConfigProjects) SetDefault(name string) (*AuraProject, error) {
@@ -99,44 +98,32 @@ func (p *AuraConfigProjects) SetDefault(name string) (*AuraProject, error) {
 		return nil, err
 	}
 
-	defaultProject, err := p.project(name, projects.Projects)
-	if err != nil {
-		return nil, clierr.NewUsageError(err.Error())
+	if project, ok := projects.Projects[name]; ok {
+		projects.DefaultProject = name
+
+		err = p.updateProjects(data, projects)
+		if err != nil {
+			return nil, err
+		}
+		return project, nil
 	}
 
-	projects.DefaultProject = name
-
-	err = p.updateProjects(data, projects)
-	if err != nil {
-		return nil, err
-	}
-	return defaultProject, nil
+	return nil, clierr.NewUsageError("could not find a project with the name %s", name)
 }
 
 func (p *AuraConfigProjects) Default() (*AuraProject, error) {
 	data := fileutils.ReadFileSafe(p.fs, p.filePath)
 
-	auraProjectConfig := AuraProjectConfig{}
-	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
+	projects, err := p.projects(data)
+	if err != nil {
 		return nil, err
 	}
 
-	projects := auraProjectConfig.Projects
-	defaultProject, err := p.project(projects.DefaultProject, projects.Projects)
-	if err != nil {
-		return &AuraProject{}, nil
+	if project, ok := projects.Projects[projects.DefaultProject]; ok {
+		return project, nil
 	}
 
-	return defaultProject, nil
-}
-
-func (p *AuraConfigProjects) project(name string, projects []*AuraProject) (*AuraProject, error) {
-	for _, project := range projects {
-		if project.Name == name {
-			return project, nil
-		}
-	}
-	return nil, fmt.Errorf("could not find a project with the name %s", name)
+	return &AuraProject{}, nil
 }
 
 func (p *AuraConfigProjects) projects(data []byte) (*AuraProjects, error) {

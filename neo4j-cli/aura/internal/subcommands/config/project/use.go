@@ -16,7 +16,7 @@ func NewUseCmd(cfg *clicfg.Config) *cobra.Command {
 				return err
 			}
 			cmd.Printf("Set %s as default project with organization ID %s and project ID %s",
-				defaultProject.Name,
+				args[0],
 				defaultProject.OrganizationId,
 				defaultProject.ProjectId,
 			)

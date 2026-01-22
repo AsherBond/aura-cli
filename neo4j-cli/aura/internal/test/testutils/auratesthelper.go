@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/shlex"
 	"github.com/neo4j/cli/common/clicfg"
+	"github.com/neo4j/cli/common/clicfg/projects"
 	"github.com/neo4j/cli/common/clierr"
 	"github.com/neo4j/cli/neo4j-cli/aura"
 	"github.com/neo4j/cli/test/utils/testfs"
@@ -80,7 +81,7 @@ func (helper *AuraTestHelper) SetCredentialsValue(key string, value interface{})
 }
 
 func (helper *AuraTestHelper) SetDefaultProjectInConfig(organizationId, projectId string) {
-	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
+	helper.SetConfigValue("aura-projects.projects", map[string]*projects.AuraProject{"test": {OrganizationId: organizationId, ProjectId: projectId}})
 	helper.SetConfigValue("aura-projects.default-project", "test")
 }
 
@@ -241,7 +242,7 @@ func NewAuraTestHelper(t *testing.T) AuraTestHelper {
 	helper.cfg = fmt.Sprintf(`{
 				"aura-projects": {
 					"default-project": "",
-					"projects": []
+					"projects": {}
 				},
 				"aura": {
 					"auth-url": "%s/oauth/token",
