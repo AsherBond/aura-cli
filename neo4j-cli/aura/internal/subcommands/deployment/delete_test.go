@@ -38,8 +38,8 @@ func TestDeleteDeploymentWithOrganizationAndProjectIdFromConfig(t *testing.T) {
 
 	mockHandler := helper.NewRequestHandlerMock(fmt.Sprintf("/v2beta1/organizations/%s/projects/%s/fleet-manager/deployments/%s", organizationId, projectId, deploymentId), http.StatusNoContent, "")
 
-	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
-	helper.SetConfigValue("projects.default-project", "test")
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
+	helper.SetConfigValue("aura-projects.default-project", "test")
 
 	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetConfigValue("aura.output", "json")

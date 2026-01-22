@@ -234,7 +234,7 @@ func NewAuraTestHelper(t *testing.T) AuraTestHelper {
 	server := httptest.NewServer(helper.mux)
 
 	helper.cfg = fmt.Sprintf(`{
-				"projects": {
+				"aura-projects": {
 					"default-project": "",
 					"projects": []
 				},

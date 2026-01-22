@@ -11,12 +11,12 @@ func TestAddFirstProject(t *testing.T) {
 	defer helper.Close()
 
 	helper.SetConfigValue("aura.beta-enabled", true)
-	helper.SetConfigValue("projects.projects", []map[string]string{})
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{})
 
 	helper.ExecuteCommand("config project add --name test --organization-id testorganizationid --project-id testprojectid")
 
-	helper.AssertConfigValue("projects.projects", `[{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}]`)
-	helper.AssertConfigValue("projects.default-project", "test")
+	helper.AssertConfigValue("aura-projects.projects", `[{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}]`)
+	helper.AssertConfigValue("aura-projects.default-project", "test")
 }
 
 func TestAddProjectIfAlreadyExists(t *testing.T) {
@@ -24,7 +24,7 @@ func TestAddProjectIfAlreadyExists(t *testing.T) {
 	defer helper.Close()
 
 	helper.SetConfigValue("aura.beta-enabled", true)
-	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
 
 	helper.ExecuteCommand("config project add --name test --organization-id testorganizationid --project-id testprojectid")
 
@@ -35,11 +35,11 @@ func TestAddAditionalProjects(t *testing.T) {
 	defer helper.Close()
 
 	helper.SetConfigValue("aura.beta-enabled", true)
-	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
-	helper.SetConfigValue("projects.default-project", "test")
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
+	helper.SetConfigValue("aura-projects.default-project", "test")
 
 	helper.ExecuteCommand("config project add --name test-new --organization-id newtestorganizationid --project-id newtestprojectid")
 
-	helper.AssertConfigValue("projects.projects", `[{"name":"test","organization-id":"testorganizationid","project-id":"testprojectid"}, {"name":"test-new","organization-id":"newtestorganizationid","project-id":"newtestprojectid"}]`)
-	helper.AssertConfigValue("projects.default-project", "test")
+	helper.AssertConfigValue("aura-projects.projects", `[{"name":"test","organization-id":"testorganizationid","project-id":"testprojectid"}, {"name":"test-new","organization-id":"newtestorganizationid","project-id":"newtestprojectid"}]`)
+	helper.AssertConfigValue("aura-projects.default-project", "test")
 }

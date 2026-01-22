@@ -9,7 +9,7 @@ import (
 
 	"github.com/neo4j/cli/common/clicfg/credentials"
 	"github.com/neo4j/cli/common/clicfg/fileutils"
-	"github.com/neo4j/cli/common/clierr"
+	"github.com/neo4j/cli/common/clicfg/projects"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -63,6 +63,7 @@ func NewConfig(fs afero.Fs, version string) *Config {
 	}
 
 	credentials := credentials.NewCredentials(fs, ConfigPrefix)
+	projects := projects.NewAuraConfigProjects(fs, fullConfigPath)
 
 	return &Config{
 		Version: version,
@@ -73,6 +74,7 @@ func NewConfig(fs afero.Fs, version string) *Config {
 				Interval:   20,
 			},
 			ValidConfigKeys: []string{"auth-url", "base-url", "default-tenant", "output", "beta-enabled"},
+			Projects:        projects,
 		},
 		Credentials: credentials,
 	}
@@ -88,7 +90,7 @@ func setDefaultValues(Viper *viper.Viper) {
 	Viper.SetDefault("aura.auth-url", DefaultAuraAuthUrl)
 	Viper.SetDefault("aura.output", "default")
 	Viper.SetDefault("aura.beta-enabled", DefaultAuraBetaEnabled)
-	Viper.SetDefault("projects", AuraProjects{DefaultProject: "", Projects: []*AuraProject{}})
+	Viper.SetDefault("aura-projects", projects.AuraProjects{DefaultProject: "", Projects: []*projects.AuraProject{}})
 }
 
 type AuraConfig struct {
@@ -96,6 +98,7 @@ type AuraConfig struct {
 	fs              afero.Fs
 	pollingOverride PollingConfig
 	ValidConfigKeys []string
+	Projects        *projects.AuraConfigProjects
 }
 
 type PollingConfig struct {
@@ -132,11 +135,19 @@ func (config *AuraConfig) Set(key string, value string) {
 	fileutils.WriteFile(config.fs, filename, []byte(updateConfig))
 }
 
-func (config *AuraConfig) Print(cmd *cobra.Command) {
+func (config *AuraConfig) PrintConfig(cmd *cobra.Command) {
+	config.print(cmd, "aura")
+}
+
+func (config *AuraConfig) PrintConfigProjects(cmd *cobra.Command) {
+	config.print(cmd, "aura-projects")
+}
+
+func (config *AuraConfig) print(cmd *cobra.Command, path string) {
 	encoder := json.NewEncoder(cmd.OutOrStdout())
 	encoder.SetIndent("", "\t")
 
-	if err := encoder.Encode(config.viper.Get("aura")); err != nil {
+	if err := encoder.Encode(config.viper.Get(path)); err != nil {
 		panic(err)
 	}
 }
@@ -220,142 +231,19 @@ func (config *AuraConfig) auraBaseUrlOnConfigChange(url string) string {
 	return removePathParametersFromUrl(url)
 }
 
-// Types and functions for the "projects" part of the Aura Config
-type AuraProjectConfig struct {
-	Aura     any           `json:"aura"`
-	Projects *AuraProjects `json:"projects"`
-}
-
-type AuraProjects struct {
-	DefaultProject string         `json:"default-project"`
-	Projects       []*AuraProject `json:"projects"`
-}
-
-type AuraProject struct {
-	Name           string `json:"name"`
-	OrganizationId string `json:"organization-id"`
-	ProjectId      string `json:"project-id"`
-}
-
+// Define config projects functions
 func (config *AuraConfig) AddProject(name string, organizationId string, projectId string) error {
-	filename := config.viper.ConfigFileUsed()
-	data := fileutils.ReadFileSafe(config.fs, filename)
-
-	auraProjectConfig := AuraProjectConfig{Projects: &AuraProjects{DefaultProject: "", Projects: []*AuraProject{}}}
-	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
-		return err
-	}
-
-	projects := auraProjectConfig.Projects
-	for _, project := range projects.Projects {
-		if project.Name == name {
-			return clierr.NewUsageError("already have a project with the name %s", name)
-		}
-	}
-
-	projects.Projects = append(projects.Projects, &AuraProject{Name: name, OrganizationId: organizationId, ProjectId: projectId})
-	if len(projects.Projects) == 1 {
-		projects.DefaultProject = name
-	}
-
-	updateConfig, err := sjson.Set(string(data), "projects", projects)
-	if err != nil {
-		return err
-	}
-
-	fileutils.WriteFile(config.fs, filename, []byte(updateConfig))
-	return nil
+	return config.Projects.Add(name, organizationId, projectId)
 }
 
 func (config *AuraConfig) RemoveProject(name string) error {
-	filename := config.viper.ConfigFileUsed()
-	data := fileutils.ReadFileSafe(config.fs, filename)
-
-	auraProjectConfig := AuraProjectConfig{}
-	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
-		return err
-	}
-	indexToRemove := -1
-	projects := auraProjectConfig.Projects
-	for i, project := range projects.Projects {
-		if project.Name == name {
-			indexToRemove = i
-		}
-	}
-
-	if indexToRemove == -1 {
-		return clierr.NewUsageError("could not find a project with the name %s to remove", name)
-	}
-
-	projects.Projects = append(projects.Projects[:indexToRemove], projects.Projects[indexToRemove+1:]...)
-	if len(projects.Projects) == 0 {
-		projects.DefaultProject = ""
-	}
-
-	updateConfig, err := sjson.Set(string(data), "projects", projects)
-	if err != nil {
-		return err
-	}
-
-	fileutils.WriteFile(config.fs, filename, []byte(updateConfig))
-	return nil
+	return config.Projects.Remove(name)
 }
 
-func (config *AuraConfig) ListProjects(cmd *cobra.Command) error {
-	encoder := json.NewEncoder(cmd.OutOrStdout())
-	encoder.SetIndent("", "\t")
-
-	if err := encoder.Encode(config.viper.Get("projects")); err != nil {
-		return err
-	}
-	return nil
+func (config *AuraConfig) SetDefaultProject(name string) (*projects.AuraProject, error) {
+	return config.Projects.SetDefault(name)
 }
 
-func (config *AuraConfig) SetDefaultProject(name string) (*AuraProject, error) {
-	filename := config.viper.ConfigFileUsed()
-	data := fileutils.ReadFileSafe(config.fs, filename)
-
-	auraProjectConfig := AuraProjectConfig{}
-	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
-		return nil, err
-	}
-
-	projects := auraProjectConfig.Projects
-	var defaultProject *AuraProject
-	for _, project := range projects.Projects {
-		if project.Name == name {
-			defaultProject = project
-		}
-	}
-	if defaultProject == nil {
-		return nil, clierr.NewUsageError("could not find a project with the name %s", name)
-	}
-	projects.DefaultProject = name
-
-	updateConfig, err := sjson.Set(string(data), "projects", projects)
-	if err != nil {
-		return nil, err
-	}
-
-	fileutils.WriteFile(config.fs, filename, []byte(updateConfig))
-	return defaultProject, nil
-}
-
-func (config *AuraConfig) GetDefaultProject() (*AuraProject, error) {
-	filename := config.viper.ConfigFileUsed()
-	data := fileutils.ReadFileSafe(config.fs, filename)
-
-	auraProjectConfig := AuraProjectConfig{}
-	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
-		return nil, err
-	}
-
-	projects := auraProjectConfig.Projects
-	for _, project := range projects.Projects {
-		if project.Name == projects.DefaultProject {
-			return project, nil
-		}
-	}
-
-	return &AuraProject{}, nil
+func (config *AuraConfig) GetDefaultProject() (*projects.AuraProject, error) {
+	return config.Projects.Default()
 }

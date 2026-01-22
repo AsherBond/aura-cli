@@ -11,11 +11,11 @@ func TestUseProject(t *testing.T) {
 	defer helper.Close()
 
 	helper.SetConfigValue("aura.beta-enabled", true)
-	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
 
 	helper.ExecuteCommand("config project use test")
 
-	helper.AssertConfigValue("projects.default-project", "test")
+	helper.AssertConfigValue("aura-projects.default-project", "test")
 }
 
 func TestUseProjectIfDoesNotExist(t *testing.T) {

@@ -641,8 +641,8 @@ func TestGetImportJobByIdWithOrganizationAndProjectIdFromConfig(t *testing.T) {
         "user_id": "f607bebe-0cc0-4166-b60c-b4eed69ee7ee"
     }}`)
 
-	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
-	helper.SetConfigValue("projects.default-project", "test")
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": organizationId, "project-id": projectId}})
+	helper.SetConfigValue("aura-projects.default-project", "test")
 
 	helper.SetConfigValue("aura.beta-enabled", true)
 

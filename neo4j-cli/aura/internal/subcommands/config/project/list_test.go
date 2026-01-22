@@ -12,8 +12,8 @@ func TestListProjects(t *testing.T) {
 
 	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetConfigValue("output", "json")
-	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
-	helper.SetConfigValue("projects.default-project", "test")
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
+	helper.SetConfigValue("aura-projects.default-project", "test")
 
 	helper.ExecuteCommand("config project list")
 

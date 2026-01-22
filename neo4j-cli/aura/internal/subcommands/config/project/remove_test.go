@@ -11,12 +11,12 @@ func TestRemoveProject(t *testing.T) {
 	defer helper.Close()
 
 	helper.SetConfigValue("aura.beta-enabled", true)
-	helper.SetConfigValue("projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{{"name": "test", "organization-id": "testorganizationid", "project-id": "testprojectid"}})
 
 	helper.ExecuteCommand("config project remove test")
 
-	helper.AssertConfigValue("projects.projects", "[]")
-	helper.AssertConfigValue("projects.default-project", "")
+	helper.AssertConfigValue("aura-projects.projects", "[]")
+	helper.AssertConfigValue("aura-projects.default-project", "")
 }
 
 func TestRemoveProjectWhenProjectDoesNotExist(t *testing.T) {
@@ -24,7 +24,7 @@ func TestRemoveProjectWhenProjectDoesNotExist(t *testing.T) {
 	defer helper.Close()
 
 	helper.SetConfigValue("aura.beta-enabled", true)
-	helper.SetConfigValue("projects.projects", []map[string]string{})
+	helper.SetConfigValue("aura-projects.projects", []map[string]string{})
 
 	helper.ExecuteCommand("config project remove test")
 
