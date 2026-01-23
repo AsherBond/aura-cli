@@ -11,7 +11,7 @@ func NewRemoveCmd(cfg *clicfg.Config) *cobra.Command {
 		Short: "Removes a project",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return cfg.Aura.RemoveProject(args[0])
+			return cfg.Aura.Projects.Remove(args[0])
 		},
 	}
 }

@@ -12,7 +12,7 @@ func NewUseCmd(cfg *clicfg.Config) *cobra.Command {
 		Long:  "Sets the default project to be used by other commands that require the organization and project ID flags. This allows running said commands without setting the flags explicitly as the values will be taken from the configuration",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			defaultProject, err := cfg.Aura.SetDefaultProject(args[0])
+			defaultProject, err := cfg.Aura.Projects.SetDefault(args[0])
 			if err != nil {
 				return err
 			}

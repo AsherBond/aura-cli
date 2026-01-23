@@ -230,20 +230,3 @@ func (config *AuraConfig) auraBaseUrlOnConfigChange(url string) string {
 	}
 	return removePathParametersFromUrl(url)
 }
-
-// Define config projects functions
-func (config *AuraConfig) AddProject(name string, organizationId string, projectId string) error {
-	return config.Projects.Add(name, organizationId, projectId)
-}
-
-func (config *AuraConfig) RemoveProject(name string) error {
-	return config.Projects.Remove(name)
-}
-
-func (config *AuraConfig) SetDefaultProject(name string) (*projects.AuraProject, error) {
-	return config.Projects.SetDefault(name)
-}
-
-func (config *AuraConfig) GetDefaultProject() (*projects.AuraProject, error) {
-	return config.Projects.Default()
-}
