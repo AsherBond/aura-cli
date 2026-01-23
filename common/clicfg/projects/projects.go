@@ -15,8 +15,7 @@ type AuraConfigProjects struct {
 	filePath string
 }
 
-type AuraProjectConfig struct {
-	Aura     any           `json:"aura"`
+type ConfigAuraProjects struct {
 	Projects *AuraProjects `json:"aura-projects"`
 }
 
@@ -127,7 +126,7 @@ func (p *AuraConfigProjects) Default() (*AuraProject, error) {
 }
 
 func (p *AuraConfigProjects) projects(data []byte) (*AuraProjects, error) {
-	auraProjectConfig := AuraProjectConfig{}
+	auraProjectConfig := ConfigAuraProjects{}
 	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
 		return nil, err
 	}
