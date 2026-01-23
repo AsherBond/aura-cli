@@ -132,6 +132,8 @@ aura-cli config set default-tenant TENANT-ID
 
 # Working with subcommands that use organization ID and project ID instead of tenant ID
 
+Currently all of these commands are a part of the V2 beta.
+
 If you want to avoid setting the organization-id and project-id flag for each command, you can save these values as a project configuration with the `config project` subcommand. The subcommand allows adding, removing and listing projects as well as setting a project as default.
 
 ```text
@@ -696,7 +698,10 @@ aura-cli config set SETTING_NAME SETTING_VALUE
 
 ### Project
 
-Manage project related configurations.
+Manage project related configurations. The configurations include an organization and a project ID that will be used in commands that require them if now values are given through flags.
+A user can add multiple named projects and one of the projects should always be set as the default project to be used with commands.
+
+The projects subcommand is currently under the v2 beta flag.
 
 #### Add
 
