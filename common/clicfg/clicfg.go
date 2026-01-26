@@ -135,11 +135,11 @@ func (config *AuraConfig) Set(key string, value string) {
 	fileutils.WriteFile(config.fs, filename, []byte(updateConfig))
 }
 
-func (config *AuraConfig) PrintConfig(cmd *cobra.Command) {
+func (config *AuraConfig) PrintAuraConfig(cmd *cobra.Command) {
 	config.print(cmd, "aura")
 }
 
-func (config *AuraConfig) PrintConfigProjects(cmd *cobra.Command) {
+func (config *AuraConfig) PrintAuraProjects(cmd *cobra.Command) {
 	config.print(cmd, "aura-projects")
 }
 

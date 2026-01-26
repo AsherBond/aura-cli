@@ -10,7 +10,7 @@ func NewListCmd(cfg *clicfg.Config) *cobra.Command {
 		Use:   "list",
 		Short: "list projects",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cfg.Aura.PrintConfigProjects(cmd)
+			cfg.Aura.PrintAuraProjects(cmd)
 			return nil
 		},
 	}
