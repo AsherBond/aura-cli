@@ -698,14 +698,14 @@ aura-cli config set SETTING_NAME SETTING_VALUE
 
 ### Project
 
-Manage project related configurations. The configurations include an organization and a project ID that will be used in commands that require them if now values are given through flags.
+Manage default projects to use in commands that require an organization and project ID.
 A user can add multiple named projects and one of the projects should always be set as the default project to be used with commands.
 
 The projects subcommand is currently under the v2 beta flag.
 
 #### Add
 
-Add a set of organization and project IDs to use with v2 subcommands.
+Add a set of organization and project IDs to use with v2 subcommands. If this is the first project to added, it will also automatically be set as the default project.
 
 ```text
 aura-cli config project add --name SETTING-NAME --organization-id ORGANIZATION-ID --project-id PROJECT-ID
