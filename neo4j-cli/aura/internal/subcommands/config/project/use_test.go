@@ -16,7 +16,7 @@ func TestUseProject(t *testing.T) {
 
 	helper.ExecuteCommand("config project use test")
 
-	helper.AssertConfigValue("aura-projects.default-project", "test")
+	helper.AssertConfigValue("aura-projects.default", "test")
 }
 
 func TestUseProjectIfDoesNotExist(t *testing.T) {

@@ -20,8 +20,8 @@ type ConfigAuraProjects struct {
 }
 
 type AuraProjects struct {
-	DefaultProject string                  `json:"default-project"`
-	Projects       map[string]*AuraProject `json:"projects"`
+	Default  string                  `json:"default"`
+	Projects map[string]*AuraProject `json:"projects"`
 }
 
 type AuraProject struct {
@@ -43,8 +43,8 @@ func (p *AuraConfigProjects) Add(name string, organizationId string, projectId s
 
 	if projects == nil {
 		projects = &AuraProjects{
-			DefaultProject: "",
-			Projects:       map[string]*AuraProject{},
+			Default:  "",
+			Projects: map[string]*AuraProject{},
 		}
 	}
 
@@ -55,7 +55,7 @@ func (p *AuraConfigProjects) Add(name string, organizationId string, projectId s
 	projects.Projects[name] = &AuraProject{OrganizationId: organizationId, ProjectId: projectId}
 
 	if len(projects.Projects) == 1 {
-		projects.DefaultProject = name
+		projects.Default = name
 	}
 
 	return p.updateProjects(data, projects)
@@ -73,12 +73,12 @@ func (p *AuraConfigProjects) Remove(name string) error {
 	if _, ok := projects.Projects[name]; ok {
 		delete(projects.Projects, name)
 		if len(projects.Projects) == 0 {
-			projects.DefaultProject = ""
+			projects.Default = ""
 		} else {
-			if _, ok := projects.Projects[projects.DefaultProject]; !ok {
+			if _, ok := projects.Projects[projects.Default]; !ok {
 				for key := range projects.Projects {
 					fmt.Printf("Removed the current default project %s, setting %s as the new default project", name, key)
-					projects.DefaultProject = key
+					projects.Default = key
 					break
 				}
 			}
@@ -98,7 +98,7 @@ func (p *AuraConfigProjects) SetDefault(name string) (*AuraProject, error) {
 	}
 
 	if project, ok := projects.Projects[name]; ok {
-		projects.DefaultProject = name
+		projects.Default = name
 
 		err = p.updateProjects(data, projects)
 		if err != nil {
@@ -118,7 +118,7 @@ func (p *AuraConfigProjects) Default() (*AuraProject, error) {
 		return nil, err
 	}
 
-	if project, ok := projects.Projects[projects.DefaultProject]; ok {
+	if project, ok := projects.Projects[projects.Default]; ok {
 		return project, nil
 	}
 

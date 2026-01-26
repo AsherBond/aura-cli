@@ -82,7 +82,7 @@ func (helper *AuraTestHelper) SetCredentialsValue(key string, value interface{})
 
 func (helper *AuraTestHelper) SetDefaultProjectInConfig(organizationId, projectId string) {
 	helper.SetConfigValue("aura-projects.projects", map[string]*projects.AuraProject{"test": {OrganizationId: organizationId, ProjectId: projectId}})
-	helper.SetConfigValue("aura-projects.default-project", "test")
+	helper.SetConfigValue("aura-projects.default", "test")
 }
 
 // Assets no errors were returned
@@ -241,7 +241,7 @@ func NewAuraTestHelper(t *testing.T) AuraTestHelper {
 
 	helper.cfg = fmt.Sprintf(`{
 				"aura-projects": {
-					"default-project": "",
+					"default": "",
 					"projects": {}
 				},
 				"aura": {

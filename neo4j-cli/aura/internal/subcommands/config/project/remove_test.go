@@ -17,7 +17,7 @@ func TestRemoveProject(t *testing.T) {
 	helper.ExecuteCommand("config project remove test")
 
 	helper.AssertConfigValue("aura-projects.projects", "{}")
-	helper.AssertConfigValue("aura-projects.default-project", "")
+	helper.AssertConfigValue("aura-projects.default", "")
 }
 
 func TestRemoveProjectWhenProjectDoesNotExist(t *testing.T) {
@@ -40,7 +40,7 @@ func TestRemoveProjectWhenMultipleProjectsExist(t *testing.T) {
 		"first-project":  {OrganizationId: "testorganizationid", ProjectId: "testprojectid"},
 		"second-project": {OrganizationId: "testorganizationid", ProjectId: "testprojectid"},
 	})
-	helper.SetConfigValue("aura-projects.default-project", "first-project")
+	helper.SetConfigValue("aura-projects.default", "first-project")
 
 	helper.ExecuteCommand("config project remove first-project")
 
@@ -51,7 +51,7 @@ func TestRemoveProjectWhenMultipleProjectsExist(t *testing.T) {
 			"project-id": "testprojectid"
 		}
 	}`)
-	helper.AssertConfigValue("aura-projects.default-project", "second-project")
+	helper.AssertConfigValue("aura-projects.default", "second-project")
 }
 
 func TestRemoveProjectWhenProjectDoesNotExistWithMultipleProjects(t *testing.T) {
@@ -63,7 +63,7 @@ func TestRemoveProjectWhenProjectDoesNotExistWithMultipleProjects(t *testing.T) 
 		"first-project":  {OrganizationId: "testorganizationid", ProjectId: "testprojectid"},
 		"second-project": {OrganizationId: "testorganizationid", ProjectId: "testprojectid"},
 	})
-	helper.SetConfigValue("aura-projects.default-project", "first-project")
+	helper.SetConfigValue("aura-projects.default", "first-project")
 
 	helper.ExecuteCommand("config project remove non-existing")
 
@@ -79,5 +79,5 @@ func TestRemoveProjectWhenProjectDoesNotExistWithMultipleProjects(t *testing.T) 
 			"project-id": "testprojectid"
 		}
 	}`)
-	helper.AssertConfigValue("aura-projects.default-project", "first-project")
+	helper.AssertConfigValue("aura-projects.default", "first-project")
 }

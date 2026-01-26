@@ -14,13 +14,13 @@ func TestListProjects(t *testing.T) {
 	helper.SetConfigValue("aura.beta-enabled", true)
 	helper.SetConfigValue("output", "json")
 	helper.SetConfigValue("aura-projects.projects", map[string]*projects.AuraProject{"test": {OrganizationId: "testorganizationid", ProjectId: "testprojectid"}})
-	helper.SetConfigValue("aura-projects.default-project", "test")
+	helper.SetConfigValue("aura-projects.default", "test")
 
 	helper.ExecuteCommand("config project list")
 
 	helper.AssertOutJson(`
 		{
-			"default-project": "test",
+			"default": "test",
 			"projects": {
 				"test": {
 					"organization-id": "testorganizationid",
@@ -40,7 +40,7 @@ func TestListProjectWithNoData(t *testing.T) {
 	helper.ExecuteCommand("config project list")
 
 	helper.AssertOutJson(`{
-		"default-project": "",
+		"default": "",
 		"projects": {}
 	}`)
 }
