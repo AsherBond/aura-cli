@@ -36,7 +36,7 @@ func NewAuraConfigProjects(fs afero.Fs, filePath string) *AuraConfigProjects {
 func (p *AuraConfigProjects) Add(name string, organizationId string, projectId string) error {
 	data := fileutils.ReadFileSafe(p.fs, p.filePath)
 
-	projects, err := p.projects(data)
+	projects, err := p.projectsFrom(data)
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func (p *AuraConfigProjects) Add(name string, organizationId string, projectId s
 func (p *AuraConfigProjects) Remove(name string) error {
 	data := fileutils.ReadFileSafe(p.fs, p.filePath)
 
-	projects, err := p.projects(data)
+	projects, err := p.projectsFrom(data)
 	if err != nil {
 		return err
 	}
@@ -92,7 +92,7 @@ func (p *AuraConfigProjects) Remove(name string) error {
 func (p *AuraConfigProjects) SetDefault(name string) (*AuraProject, error) {
 	data := fileutils.ReadFileSafe(p.fs, p.filePath)
 
-	projects, err := p.projects(data)
+	projects, err := p.projectsFrom(data)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (p *AuraConfigProjects) SetDefault(name string) (*AuraProject, error) {
 func (p *AuraConfigProjects) Default() (*AuraProject, error) {
 	data := fileutils.ReadFileSafe(p.fs, p.filePath)
 
-	projects, err := p.projects(data)
+	projects, err := p.projectsFrom(data)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +125,7 @@ func (p *AuraConfigProjects) Default() (*AuraProject, error) {
 	return &AuraProject{}, nil
 }
 
-func (p *AuraConfigProjects) projects(data []byte) (*AuraProjects, error) {
+func (p *AuraConfigProjects) projectsFrom(data []byte) (*AuraProjects, error) {
 	auraProjectConfig := ConfigAuraProjects{}
 	if err := json.Unmarshal(data, &auraProjectConfig); err != nil {
 		return nil, err
