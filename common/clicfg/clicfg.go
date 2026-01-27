@@ -9,6 +9,7 @@ import (
 
 	"github.com/neo4j/cli/common/clicfg/credentials"
 	"github.com/neo4j/cli/common/clicfg/fileutils"
+	"github.com/neo4j/cli/common/clicfg/projects"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -62,6 +63,7 @@ func NewConfig(fs afero.Fs, version string) *Config {
 	}
 
 	credentials := credentials.NewCredentials(fs, ConfigPrefix)
+	projects := projects.NewAuraConfigProjects(fs, fullConfigPath)
 
 	return &Config{
 		Version: version,
@@ -72,6 +74,7 @@ func NewConfig(fs afero.Fs, version string) *Config {
 				Interval:   20,
 			},
 			ValidConfigKeys: []string{"auth-url", "base-url", "default-tenant", "output", "beta-enabled"},
+			Projects:        projects,
 		},
 		Credentials: credentials,
 	}
@@ -87,6 +90,7 @@ func setDefaultValues(Viper *viper.Viper) {
 	Viper.SetDefault("aura.auth-url", DefaultAuraAuthUrl)
 	Viper.SetDefault("aura.output", "default")
 	Viper.SetDefault("aura.beta-enabled", DefaultAuraBetaEnabled)
+	Viper.SetDefault("aura-projects", projects.AuraProjects{Default: "", Projects: map[string]*projects.AuraProject{}})
 }
 
 type AuraConfig struct {
@@ -94,6 +98,7 @@ type AuraConfig struct {
 	fs              afero.Fs
 	pollingOverride PollingConfig
 	ValidConfigKeys []string
+	Projects        *projects.AuraConfigProjects
 }
 
 type PollingConfig struct {
@@ -130,11 +135,19 @@ func (config *AuraConfig) Set(key string, value string) {
 	fileutils.WriteFile(config.fs, filename, []byte(updateConfig))
 }
 
-func (config *AuraConfig) Print(cmd *cobra.Command) {
+func (config *AuraConfig) PrintAuraConfig(cmd *cobra.Command) {
+	config.print(cmd, "aura")
+}
+
+func (config *AuraConfig) PrintAuraProjects(cmd *cobra.Command) {
+	config.print(cmd, "aura-projects")
+}
+
+func (config *AuraConfig) print(cmd *cobra.Command, path string) {
 	encoder := json.NewEncoder(cmd.OutOrStdout())
 	encoder.SetIndent("", "\t")
 
-	if err := encoder.Encode(config.viper.Get("aura")); err != nil {
+	if err := encoder.Encode(config.viper.Get(path)); err != nil {
 		panic(err)
 	}
 }

@@ -2,12 +2,13 @@ package clicfg_test
 
 import (
 	"fmt"
-	"github.com/neo4j/cli/common/clicfg"
-	"github.com/neo4j/cli/test/utils/testfs"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/neo4j/cli/common/clicfg"
+	"github.com/neo4j/cli/test/utils/testfs"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetAuraBaseUrlConfigRemovesTrailingPath(t *testing.T) {

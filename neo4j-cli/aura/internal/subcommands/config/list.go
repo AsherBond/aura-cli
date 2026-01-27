@@ -11,7 +11,7 @@ func NewListCmd(cfg *clicfg.Config) *cobra.Command {
 		Short: "Lists the current configuration of the Aura CLI subcommand",
 		Args:  cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
-			cfg.Aura.Print(cmd)
+			cfg.Aura.PrintAuraConfig(cmd)
 		},
 	}
 }

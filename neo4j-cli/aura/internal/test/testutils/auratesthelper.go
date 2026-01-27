@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/shlex"
 	"github.com/neo4j/cli/common/clicfg"
+	"github.com/neo4j/cli/common/clicfg/projects"
 	"github.com/neo4j/cli/common/clierr"
 	"github.com/neo4j/cli/neo4j-cli/aura"
 	"github.com/neo4j/cli/test/utils/testfs"
@@ -77,6 +78,11 @@ func (helper *AuraTestHelper) SetCredentialsValue(key string, value interface{})
 	credentials, err := sjson.Set(helper.credentials, key, value)
 	assert.Nil(helper.t, err)
 	helper.credentials = credentials
+}
+
+func (helper *AuraTestHelper) SetDefaultProjectInConfig(organizationId, projectId string) {
+	helper.SetConfigValue("aura-projects.projects", map[string]*projects.AuraProject{"test": {OrganizationId: organizationId, ProjectId: projectId}})
+	helper.SetConfigValue("aura-projects.default", "test")
 }
 
 // Assets no errors were returned
@@ -234,6 +240,10 @@ func NewAuraTestHelper(t *testing.T) AuraTestHelper {
 	server := httptest.NewServer(helper.mux)
 
 	helper.cfg = fmt.Sprintf(`{
+				"aura-projects": {
+					"default": "",
+					"projects": {}
+				},
 				"aura": {
 					"auth-url": "%s/oauth/token",
 					"base-url": "%s/v1",
