@@ -27,11 +27,14 @@ func NewGetCmd(cfg *clicfg.Config) *cobra.Command {
 		Short: "Returns deployment details",
 		Long:  "Returns details about a specific Fleet Manager deployment.",
 		Args:  cobra.ExactArgs(1),
-		PreRun: func(cmd *cobra.Command, args []string) {
-			utils.SetOragnizationAndProjectIdFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return utils.SetProjectFlagsAsRequired(cfg, cmd)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			utils.SetMissingOragnizationAndProjectIdValuesFromDefaults(cfg, &organizationId, &projectId)
+			organizationId, projectId, err := utils.SetProjetDefaults(cfg, organizationId, projectId)
+			if err != nil {
+				return err
+			}
 
 			deploymentId := args[0]
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s", organizationId, projectId, deploymentId)

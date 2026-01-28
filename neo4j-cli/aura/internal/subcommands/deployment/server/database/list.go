@@ -32,11 +32,14 @@ func NewListCmd(cfg *clicfg.Config) *cobra.Command {
 		Short: "Returns deployment server databases.",
 		Long:  "Returns databases for the given Fleet Manager deployment server.",
 		Args:  cobra.ExactArgs(0),
-		PreRun: func(cmd *cobra.Command, args []string) {
-			utils.SetOragnizationAndProjectIdFlagsAsRequired(cfg, cmd, organizationIdFlag, projectIdFlag)
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return utils.SetProjectFlagsAsRequired(cfg, cmd)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			utils.SetMissingOragnizationAndProjectIdValuesFromDefaults(cfg, &organizationId, &projectId)
+			organizationId, projectId, err := utils.SetProjetDefaults(cfg, organizationId, projectId)
+			if err != nil {
+				return err
+			}
 
 			path := fmt.Sprintf("/organizations/%s/projects/%s/fleet-manager/deployments/%s/servers/%s/databases", organizationId, projectId, deploymentId, serverId)
 
