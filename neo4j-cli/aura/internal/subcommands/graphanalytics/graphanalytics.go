@@ -1,16 +1,17 @@
+// Copyright (c) "Neo4j"
+// Neo4j Sweden AB [http://neo4j.com]
+
 package graphanalytics
 
 import (
 	"fmt"
 
+	"strings"
+
+	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/common/clierr"
 	sessions "github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands/graphanalytics/session"
 	"github.com/spf13/cobra"
-	"strings"
-)
-
-import (
-	"github.com/neo4j/cli/common/clicfg"
 )
 
 func NewCmd(cfg *clicfg.Config) *cobra.Command {

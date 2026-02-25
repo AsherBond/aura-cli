@@ -1,12 +1,16 @@
+// Copyright (c) "Neo4j"
+// Neo4j Sweden AB [http://neo4j.com]
+
 package _import
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/common/clierr"
 	"github.com/neo4j/cli/neo4j-cli/aura/internal/subcommands/import/job"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 func NewCmd(cfg *clicfg.Config) *cobra.Command {

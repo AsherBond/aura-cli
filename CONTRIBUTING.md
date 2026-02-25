@@ -45,10 +45,8 @@ If changie is not available, you may need to add /go/bin to your path: `export P
 All `.go` files must begin with the following license comment:
 
 ```go
-/*
- * Copyright (c) "Neo4j"
- * Neo4j Sweden AB [http://neo4j.com]
- */
+// Copyright (c) "Neo4j"
+// Neo4j Sweden AB [http://neo4j.com]
 ```
 
 ### Building
