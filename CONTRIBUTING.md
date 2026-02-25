@@ -40,6 +40,17 @@ Simply commit the file that this command produces and you're done!
 
 If changie is not available, you may need to add /go/bin to your path: `export PATH="$HOME/go/bin:$PATH"`
 
+### License
+
+All `.go` files must begin with the following license comment:
+
+```go
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ */
+```
+
 ### Building
 
 Builds for releases are handled in GitHub Actions. If you want to create local builds, there are a couple of approaches.
@@ -64,38 +75,38 @@ The Aura CLI aims to provide a consistent and reliable experience to the end use
 
 ### Commands
 
--   All commands must be singular
-    -   ✅ `aura-cli instance`
-    -   ❌ `aura-cli instances`
--   Verbs and nouns should be separate, with the action at the end
-    -   ✅ `aura-cli instance list`
-    -   ❌ `aura-cli list-instance`
-    -   ❌ `aura-cli list instance`
+- All commands must be singular
+    - ✅ `aura-cli instance`
+    - ❌ `aura-cli instances`
+- Verbs and nouns should be separate, with the action at the end
+    - ✅ `aura-cli instance list`
+    - ❌ `aura-cli list-instance`
+    - ❌ `aura-cli list instance`
 
 ### Parameters
 
 To avoid confusion, this guide uses the term **flags** to refer to any named argument, whether it has values or not (e.g. `-l`, `--output json`) and **arguments** exclusively for positional arguments (e.g. `list 1234`).
 
--   Only one argument should be used, if more than one is needed, use flags instead. This is to avoid confusion when passing parameters without enough context
-    -   ✅ `aura-cli instance get <id>`
-    -   ❌ `aura-cli instance get <id> <deployment-id>`
-    -   ✅ `aura-cli instance get <id> --deployment-id <deployment-id>`
-    -   ⚠️ `aura-cli instance get --instance-id <id> --deployment-id <deployment-id>`  
-        This valid, but the option above is preferred as it is more concise
--   The argument must always refer to the closest noun
-    -   ❌ `aura-cli instance snapshot list <instance-id>`
-    -   ✅ `aura-cli instance snapshot list --instance-id <instance-id>`
--   No arguments between commands
-    -   ❌ `aura-cli tenant <tenant-id> instance get <id>`
-    -   ✅ `aura-cli instance get <id> --tenant-id <tenant-id>`
--   Flags, if set, take precedence over global configuration or default values
--   Flags should have descriptions, if the flag is expected to be always set. The description must start with `(required)`
+- Only one argument should be used, if more than one is needed, use flags instead. This is to avoid confusion when passing parameters without enough context
+    - ✅ `aura-cli instance get <id>`
+    - ❌ `aura-cli instance get <id> <deployment-id>`
+    - ✅ `aura-cli instance get <id> --deployment-id <deployment-id>`
+    - ⚠️ `aura-cli instance get --instance-id <id> --deployment-id <deployment-id>`  
+      This valid, but the option above is preferred as it is more concise
+- The argument must always refer to the closest noun
+    - ❌ `aura-cli instance snapshot list <instance-id>`
+    - ✅ `aura-cli instance snapshot list --instance-id <instance-id>`
+- No arguments between commands
+    - ❌ `aura-cli tenant <tenant-id> instance get <id>`
+    - ✅ `aura-cli instance get <id> --tenant-id <tenant-id>`
+- Flags, if set, take precedence over global configuration or default values
+- Flags should have descriptions, if the flag is expected to be always set. The description must start with `(required)`
 
 #### Output
 
--   Read operations should support the following `--output` options:
-    -   `json`: Provides the raw JSON output of the API, formatted to be human-readable.
-    -   `table`: Provides a subset of the output, formatted to be human readable on a table. Try to keep the table output below 120 characters to avoid overflowing the screen.
+- Read operations should support the following `--output` options:
+    - `json`: Provides the raw JSON output of the API, formatted to be human-readable.
+    - `table`: Provides a subset of the output, formatted to be human readable on a table. Try to keep the table output below 120 characters to avoid overflowing the screen.
 
 > These guidelines are based on https://clig.dev
 
@@ -103,17 +114,17 @@ To avoid confusion, this guide uses the term **flags** to refer to any named arg
 
 Aura CLI is divided in top level commands, for example:
 
--   `instance`
--   `config`
+- `instance`
+- `config`
 
 Each of these commands handle a certain resource of the API and have several subcommands for the actions, for example:
 
--   `instance list`
--   `instance get`
+- `instance list`
+- `instance get`
 
 Nested subcommands are also allowed, for example:
 
--   `instance snapshot list`
+- `instance snapshot list`
 
 Folders and files should follow the same structure as the commands. So for example, `instance snapshot list` should be implemented in the folder `subcommands/instance/snapshot/list.go`. A single command per file
 
@@ -121,10 +132,10 @@ Folders and files should follow the same structure as the commands. So for examp
 
 Most commands targetting API resources contain some of the following subcommands as actions:
 
--   `get`
--   `list`
--   `delete`
--   `create`
+- `get`
+- `list`
+- `delete`
+- `create`
 
 Commands may also have some extra, specific commands, such as `instance pause`.
 
@@ -132,6 +143,6 @@ For asynchronous operations (i.e. operations that trigger a job that won't be fi
 
 ## Resources
 
--   [CLI Usage Guide](./docs/usageGuide/A%20Guide%20To%20The%20New%20Aura%20CLI.md).
--   [Neo4j Aura API](https://neo4j.com/docs/aura/platform/api/specification/)
--   https://clig.dev
+- [CLI Usage Guide](./docs/usageGuide/A%20Guide%20To%20The%20New%20Aura%20CLI.md).
+- [Neo4j Aura API](https://neo4j.com/docs/aura/platform/api/specification/)
+- https://clig.dev
