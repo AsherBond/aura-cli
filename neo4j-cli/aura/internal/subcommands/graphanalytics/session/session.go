@@ -1,11 +1,15 @@
+// Copyright (c) "Neo4j"
+// Neo4j Sweden AB [http://neo4j.com]
+
 package session
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/neo4j/cli/common/clicfg"
 	"github.com/neo4j/cli/common/clierr"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 func NewCmd(cfg *clicfg.Config) *cobra.Command {
